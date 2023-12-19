@@ -3,6 +3,19 @@ const argon2 = require("argon2");
 const jwt_secret = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 class User {
+	
+	/*
+async addItemToCart
+params: username, productName
+Users.find to see if user exists
+if(!user) then send an ok false
+Users.updateOne(username, some
+how push to the array with product 
+name)
+
+async removeItemFromCart
+*/
+	
 	async findAllUsers(req, res){
 		try{
 			const users = await Users.find({});
