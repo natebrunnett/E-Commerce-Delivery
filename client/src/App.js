@@ -31,6 +31,18 @@ const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
 const [cart, setCart] = useState([]);
 
 useEffect(() => {
+  
+  /*function for setCart
+by getting an array in the db
+by using a username. The username
+schema will have a nonrequired key
+called cart which should be set
+to an empty array initially
+This useffect function should
+only be called after a token
+has be assessed and if a user 
+is logged in */
+  
   const verify_token = async () => {
     try {
       if(!token){
@@ -110,6 +122,20 @@ let login = (token) => {
   }
   ];
 
+/*
+let removeFromCart = (idx) => {
+what can I do with idx? 
+match the product name with
+the product found at thisProducts
+found at idx in the original array
+remove from State cart and also
+database
+
+We only fetch directly from database
+when page is refreshed and cart is empty
+
+*/
+
 
 let addToCart = (idx) =>
 {
@@ -118,9 +144,19 @@ let addToCart = (idx) =>
   console.log(newItem);
   setCart([...cart, newItem])
   console.log(cart);
-  //onclick
-  //cart will be a state of objects
-  //we can add the thisProduct at the right idx
+  /*
+  since we set cart in the client 
+  the cart won't be a state but rather 
+a static variable. Since the page doesn't
+rerender between tabs this should be fine
+Im not sure actually. It might be best
+to just fetch data with useEffect and also 
+useState so that way we don't need to keep
+fetching from the server. So whenever we
+add or remove we will me editing the
+user schema in the data base, we will
+need an addItemToCart and removeItemFromCart
+function inside the server */
 }
 
 
