@@ -30,19 +30,8 @@ const [user, setUser] = useState(null)
 const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
 const [cart, setCart] = useState([]);
 
+
 useEffect(() => {
-  
-  /*function for setCart
-by getting an array in the db
-by using a username. The username
-schema will have a nonrequired key
-called cart which should be set
-to an empty array initially
-This useffect function should
-only be called after a token
-has be assessed and if a user 
-is logged in */
-  
   const verify_token = async () => {
     try {
       if(!token){
@@ -53,7 +42,7 @@ is logged in */
         console.log("token found")
         axios.defaults.headers.common["Authorization"] = token;
         const response = await axios.post('http://localhost:3030/Login/verifyToken');
-        console.log(response);
+        //console.log(response);
         return response.data.ok ? login(token) : logout();
       }
     }catch(error){
@@ -61,7 +50,25 @@ is logged in */
     }
   }
   verify_token();
-}, [token])
+  console.log("useEffect1=" + user)
+}, [token]);
+
+useEffect(()=>{
+  const getCart = async () => {
+    axios.post('http://localhost:3030/Login/getCart', 
+      {username:user})
+    .then((res) => {
+      // console.log("user " + user)
+      // console.log("res: " + res.data)
+      if (res.data !== "cannot find user") setCart(res.data);
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
+  console.log("useEffect2=" + user)
+  if(user) getCart();
+}, [user])
 
 let UserInfo = () => {
   return (
@@ -86,6 +93,7 @@ let logout = () => {
   localStorage.removeItem("token");
   setUser(null);
   setIsLoggedIn(false);
+  setCart([]);
   alert("You have logged out");
 }
 
@@ -124,26 +132,58 @@ let login = (token) => {
 
 /*
 let removeFromCart = (idx) => {
-what can I do with idx? 
-match the product name with
-the product found at thisProducts
-found at idx in the original array
-remove from State cart and also
-database
-
-We only fetch directly from database
-when page is refreshed and cart is empty
+get idx from cart, play around with
+the idx from cart, see if we cann
+remove a cart through the backend
+with the exact index...
+This means I would need to return
+an index from Cart.js that is
+and index from the Cart array.
 
 */
 
+let removeFromCart = (idx) => {
+  console.log(idx);
+}
 
-let addToCart = (idx) =>
+  // let updateCart=()=>{
+  //   axios.post('http://localhost:3030/Login/update', 
+  //     {username:inputUpdate, product: inputNewPass})
+  //   .then((res) => {
+  //     console.log(res.data)
+  //     setInputUpdate('');
+  //     setInputNewPass('');
+  //   })
+  //   .catch((err)=>{
+  //     console.log(err)
+  //   })
+  // }
+
+//user must be logged in to click button
+
+let AddToCart = (idx) =>
 {
+  if(isLoggedIn){
   let newItem = {}
   newItem = thisProducts[parseInt(idx.idx)];
-  console.log(newItem);
-  setCart([...cart, newItem])
-  console.log(cart);
+  //axios post will add newItem to cart in db
+  //then it will return the updated cart
+  //setCart with the newcart response
+  axios.post('http://localhost:3030/Login/update', 
+      {username:user, product: newItem})
+    .then((res) => {
+      setCart(res.data);
+      alert("Dish added to your cart")
+      console.log(cart);
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  }
+  else{
+    alert("Please login to continue")
+  }
+  
   /*
   since we set cart in the client 
   the cart won't be a state but rather 
@@ -153,7 +193,7 @@ Im not sure actually. It might be best
 to just fetch data with useEffect and also 
 useState so that way we don't need to keep
 fetching from the server. So whenever we
-add or remove we will me editing the
+add or remove we will be editing the
 user schema in the data base, we will
 need an addItemToCart and removeItemFromCart
 function inside the server */
@@ -168,7 +208,7 @@ function inside the server */
         <Route path="/" element={<Navigate to="/Login" />} />
         <Route path="/Login" element={<Login login={login}/>} />
         <Route path="/Admin" element={<Admin />} />
-        <Route path="/Categories" element={<Products addToCart={addToCart} thisProducts={thisProducts}/>} />
+        <Route path="/Categories" element={<Products AddToCart={AddToCart} thisProducts={thisProducts}/>} />
         <Route path="/Register" element={<Register />} />
         <Route path="/Cart" element={<Cart cart={cart}/>} />
       </Routes>

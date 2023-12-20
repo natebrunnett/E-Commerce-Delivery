@@ -54,9 +54,9 @@ let Admin = () => {
     })
   }
 
-  let updatePassword=()=>{
+  let updateCart=()=>{
     axios.post('http://localhost:3030/Login/update', 
-      {username:inputUpdate, password: inputNewPass})
+      {username:inputUpdate, product: inputNewPass})
     .then((res) => {
       console.log(res.data)
       setInputUpdate('');
@@ -85,12 +85,12 @@ let Admin = () => {
       </div>
 
       <div className="container">
-      <h1>Update password</h1>
+      <h1>AddItemToCart</h1>
       <input value={inputUpdate} onChange={handleChange4}
       placeholder="user"/>
       <input value={inputNewPass} onChange={handleChange5}
       placeholder="new password"/>
-      <button onClick={updatePassword}>Update</button>
+      <button onClick={updateCart}>Update</button>
       </div>
   </>
   )

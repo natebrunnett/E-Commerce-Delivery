@@ -39,7 +39,6 @@ async removeItemFromCart
 			res.send({ok: true, message: "User successfully added"})
 		}
 		catch(e){
-			console.log(e);
 			res.send({ok: false, e});
 		}
 	}
@@ -47,7 +46,6 @@ async removeItemFromCart
 	async delete (req, res){
 		let { username: name } = req.body;
 		try{
-			console.log(name);
 			const removed = await Users.deleteOne({username: name});
 			res.send({name});
 		}
@@ -56,18 +54,45 @@ async removeItemFromCart
 		};
 	}
 
-	async update(req, res){
-		let { username: name, password: newPass } = req.body;
+	async getCart(req, res){
+		let { username: name } = req.body;
 		try{
-            const updated = await Users.updateOne(
-                { username: name },{ password:newPass }
-             );
-            res.send({updated});
+		   const user = await Users.findOne({username: name});
+           if(!user) res.send("cannot find user");
+           let currentCart = user.cart;
+           res.send(currentCart);
+
+		}catch(error){
+			res.send(error);
+		}
+	}
+
+	async addItemToCart(req, res){
+		let { username: name, product: prodObject} = req.body;
+		try{
+           const user = await Users.findOne({username: name});
+           if(!user) res.send("cannot find user");
+           let newId = new mongoose.Types.ObjectId();
+           res.send(newId)
+           let newCart = user.cart;
+           newCart.push(prodObject);
+           const updatedUser = await Users.updateOne(
+           	{username: name},
+           	{
+           		cart: newCart
+           	})
+           res.send(newCart);
         }
         catch(error){
             res.send({error});
         };
 	}
+
+	//removeItemFromCart
+	/*
+	Similar as above but we use unshift or a similar
+	method
+	*/
 
 
 	async login(req, res){
@@ -77,7 +102,6 @@ async removeItemFromCart
 			if(!user) return res.json({ok:false, message:"User not found!"})
 			const match = await argon2.verify(user.password, passName);
 			if(match){
-			console.log("match found")
 			// once user is verified and confirmed we send back the token to keep in localStorage in the client and in this token we can add some data -- payload -- to retrieve from the token in the client and see, for example, which user is logged in exactly. The payload would be the first argument in .sign() method. In the following example we are sending an object with key userEmail and the value of email coming from the "user" found in line 47
       		const token = jwt.sign({ username: user.username }, "zzzzzzzzzzzzzz", {
         	expiresIn: "1h",
@@ -89,7 +113,6 @@ async removeItemFromCart
 				message:"incorrect password"})
 			}
 		}catch(e){
-			console.log(e)
 			res.send({e})
 		}
 	}

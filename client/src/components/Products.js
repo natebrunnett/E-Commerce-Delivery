@@ -8,14 +8,24 @@ let Products = (props) => {
 	let renderProducts=()=>(
     props.thisProducts.map((prod,idx)=>{
     return(
-    <div className="product">
-    <img key={idx }src={prod.image[0]} />
-    <p key={idx}><b>{prod.name}</b></p>
-    <p key={idx}>{prod.description}</p>
-    <p key={idx}>{prod.price}</p>
-    <p key={idx}>Quantity: {prod.quantity}</p>
-    <p key={idx}>Idx: {idx}</p>
-    <button onClick={() => props.addToCart({idx})}>Add to cart</button>	
+    <div key={idx} className="product">
+    <div className="top">
+        <img src={prod.image[0]} />
+        <div className="productTitle" 
+        
+         
+        ><b>{prod.name}</b></div>
+        <p 
+        style={{ fontSize: '14px'}}
+        ><b>{prod.price}</b></p>
+        <p className="description" 
+        >{prod.description}</p>
+        <p>Quantity: {prod.quantity}</p>
+        {/*<p key={idx}>Idx: {idx}</p>*/}
+    </div>
+    <div className="bottom">
+        <button onClick={() => props.AddToCart({idx})}>Add to cart</button>	
+    </div>
     </div>)})
     )
 	return (

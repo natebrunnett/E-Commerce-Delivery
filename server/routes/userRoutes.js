@@ -5,19 +5,24 @@ const express     = require('express'),
 //findAll
 router.get('/', controller.findAllUsers);
 
-//add
+//add, needs update
 router.post('/add', controller.addUser);
 
 //remove
 router.post('/remove', controller.delete);
-
-//update
-router.post('/update', controller.update);
 
 //login
 router.post('/login', controller.login);
 
 //verifyToken
 router.post('/verifyToken', controller.verifyToken);
+
+//addItemToCart
+router.post('/update', controller.addItemToCart);
+
+//getCart
+router.post('/getCart', controller.getCart);
+
+//removeItemFromCart
 
 module.exports = router;

@@ -54,7 +54,7 @@ let Login = (props) => {
 			props.login(
 			response.data.token)
 			navigate('/Categories')
-			}, 2000);
+			}, 10);
 		}else{
 			console.log("data false")
 			console.log(response.data)}
