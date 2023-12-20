@@ -92,6 +92,8 @@ async removeItemFromCart
 	/*
 	Similar as above but we use unshift or a similar
 	method
+	
+	let {username: name, cartId: id} = req.body
 	*/
 
 
