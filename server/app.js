@@ -12,6 +12,8 @@ app.use(express.json())
 const cors = require('cors')
 app.use(cors())
 
+require('dotenv').config({ path: './.env' });
+
 // connecting to mongo and checking if DB is running
 async function connecting(){
 try {

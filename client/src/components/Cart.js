@@ -3,16 +3,16 @@ let Cart = (props) => {
 	let renderCart=()=>(
     props.cart.map((prod,idx)=>{
     return(
-    <div className="cartRow">
+    <div key={idx}className="cartRow">
     	<div className="hugLeft">
-    		<img key={idx }src={prod.image[0]} />
+    		<img src={prod.image[0]} />
     		<div className="infoContainer">
-    			<p key={idx}><b>{prod.name}</b></p>
-   				<p key={idx}>{prod.price}</p>
-    			<p className = "quantity" key={idx}>Quantity: {prod.quantity}</p>
+    			<p><b>{prod.name}</b></p>
+   				<p>{prod.price}</p>
+    			<p className = "quantity">Quantity: {prod.quantity}</p>
     		</div>
     	</div>
-    	<button> x </button>	
+    	<button onClick={() => props.removeFromCart(prod['_id'])}> x </button>	
     </div>)})
     )
 

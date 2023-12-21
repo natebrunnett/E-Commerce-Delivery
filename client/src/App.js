@@ -142,8 +142,16 @@ and index from the Cart array.
 
 */
 
-let removeFromCart = (idx) => {
-  console.log(idx);
+let removeFromCart = (thisId) => {
+  axios.post('http://localhost:3030/Login/deleteCartItem', 
+      {username:user, id: thisId})
+    .then((res) => {
+      setCart(res.data);
+      alert("Dish removed");
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
 }
 
   // let updateCart=()=>{
@@ -210,7 +218,8 @@ function inside the server */
         <Route path="/Admin" element={<Admin />} />
         <Route path="/Categories" element={<Products AddToCart={AddToCart} thisProducts={thisProducts}/>} />
         <Route path="/Register" element={<Register />} />
-        <Route path="/Cart" element={<Cart cart={cart}/>} />
+        <Route path="/Cart" element={<Cart 
+        removeFromCart={removeFromCart} cart={cart}/>} />
       </Routes>
     </Router>
   );

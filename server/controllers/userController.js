@@ -1,6 +1,5 @@
 const Users = require('../models/User.js');
 const argon2 = require("argon2");
-const jwt_secret = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 class User {
 	
@@ -72,8 +71,6 @@ async removeItemFromCart
 		try{
            const user = await Users.findOne({username: name});
            if(!user) res.send("cannot find user");
-           let newId = new mongoose.Types.ObjectId();
-           res.send(newId)
            let newCart = user.cart;
            newCart.push(prodObject);
            const updatedUser = await Users.updateOne(
@@ -88,14 +85,31 @@ async removeItemFromCart
         };
 	}
 
-	//removeItemFromCart
-	/*
-	Similar as above but we use unshift or a similar
-	method
-	
-	let {username: name, cartId: id} = req.body
-	*/
-
+	async removeItemFromCart(req, res){
+		let { username: name, id: prodId} = req.body;
+		try{
+           const user = await Users.findOne({username: name});
+           if(!user) res.send("cannot find user");
+           let newCart = user.cart;
+           for(let i = 0; i < newCart.length; i++)
+           {
+           	// console.log("idx " + String(newCart[i]['_id']));
+           	// console.log("key " + String(prodId))
+           	if(String(newCart[i]['_id']) === String(prodId)){
+           		newCart.splice(i, 1);
+           	}
+           }
+           const updatedUser = await Users.updateOne(
+           	{username: name},
+           	{
+           		cart: newCart
+           	})
+           res.send(newCart);
+        }
+        catch(error){
+            res.send({error});
+        };
+	}
 
 	async login(req, res){
 		let {username: name, password: passName}=req.body
@@ -105,7 +119,7 @@ async removeItemFromCart
 			const match = await argon2.verify(user.password, passName);
 			if(match){
 			// once user is verified and confirmed we send back the token to keep in localStorage in the client and in this token we can add some data -- payload -- to retrieve from the token in the client and see, for example, which user is logged in exactly. The payload would be the first argument in .sign() method. In the following example we are sending an object with key userEmail and the value of email coming from the "user" found in line 47
-      		const token = jwt.sign({ username: user.username }, "zzzzzzzzzzzzzz", {
+      		const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET, {
         	expiresIn: "1h",
       		}); //{expiresIn:'365d'}
       		// after we send the payload to the client you can see how to get it in the client's Login component inside handleSubmit function
@@ -121,7 +135,7 @@ async removeItemFromCart
 
 	async verifyToken(req, res){
 		const token = req.headers.authorization;
-		jwt.verify(token, "zzzzzzzzzzzzzz", (err, succ) => {
+		jwt.verify(token, process.env.JWT_SECRET, (err, succ) => {
     		err
       		  ? res.json({ ok: false, message: "Token is corrupted" })
       		  : res.json({ ok: true, succ });

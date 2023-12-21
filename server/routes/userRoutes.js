@@ -20,6 +20,9 @@ router.post('/verifyToken', controller.verifyToken);
 //addItemToCart
 router.post('/update', controller.addItemToCart);
 
+//removeItemFromCart
+router.post('/deleteCartItem', controller.removeItemFromCart);
+
 //getCart
 router.post('/getCart', controller.getCart);
 
