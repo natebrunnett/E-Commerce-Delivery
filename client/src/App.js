@@ -192,19 +192,6 @@ let AddToCart = (idx) =>
     alert("Please login to continue")
   }
   
-  /*
-  since we set cart in the client 
-  the cart won't be a state but rather 
-a static variable. Since the page doesn't
-rerender between tabs this should be fine
-Im not sure actually. It might be best
-to just fetch data with useEffect and also 
-useState so that way we don't need to keep
-fetching from the server. So whenever we
-add or remove we will be editing the
-user schema in the data base, we will
-need an addItemToCart and removeItemFromCart
-function inside the server */
 }
 
 
